@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Taks } from "../../components/Task";
 import { TaskFilter } from "./components/TaskFilter";
 import { STATUS_FILTER } from "./../../constants/TaskFilterStatus";
@@ -17,6 +17,7 @@ const Home = ({ title, tasksData, fetchTasksAction }) => {
 
   useEffect(() => {
     fetchTasksAction();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -25,6 +26,7 @@ const Home = ({ title, tasksData, fetchTasksAction }) => {
     } else {
       fetchTasksAction({ status: currentTaskFilter });
     }
+    // eslint-disable-next-line
   }, [currentTaskFilter]);
 
   return (
