@@ -6,3 +6,7 @@ export const USERS = {
 export const TASKS = {
     getTasks: 'tasks'
 };
+
+export const COLLABORATORS = {
+    getCollaborators: 'users'
+};

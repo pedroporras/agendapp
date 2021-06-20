@@ -7,17 +7,11 @@ import DatePicker from "react-date-picker";
 import { useForm, Controller } from "react-hook-form";
 import { Textarea } from "./styles";
 import { FormGroup, LabelError } from "../../globalStyles";
+import { useEffect } from "react";
+import { connect } from "react-redux";
+import { fetchCollaborators } from "../../store";
 
-const USERS = [
-  { value: 1, label: "Juan" },
-  { value: 2, label: "Luis" },
-  { value: 3, label: "Maria" },
-  { value: 4, label: "Jose" },
-  { value: 5, label: "Baltasar" },
-  { value: 6, label: "Gaspar" },
-];
-
-const CreateTask = ({ title }) => {
+const CreateTask = ({ title, collaboratorsData, fetchCollaboratorsAction }) => {
   
   const {
     register,
@@ -30,12 +24,21 @@ const CreateTask = ({ title }) => {
   } = useForm({ mode: 'onChange' });
 
   const onSubmitCreate = (data) => {
+    debugger;
     console.log("data form", data);
   };
 
-  /*useEffect(() => {
-    console.log('formState', formState);
-  }, [formState])*/
+  const getCollaborators = () => {
+    return collaboratorsData.collaborators.map(({id, name}) => {return {value: id, label : name}})
+  };
+
+
+  useEffect(() => {
+    fetchCollaboratorsAction();
+    // eslint-disable-next-line
+  }, []);
+
+  const collaborators = getCollaborators();
 
   return (
     <Fragment>
@@ -65,7 +68,7 @@ const CreateTask = ({ title }) => {
               <Select
                 {...field}
                 placeholder="Select responsible"
-                options={USERS}
+                options={collaborators}
               />
             )}
           />
@@ -83,7 +86,7 @@ const CreateTask = ({ title }) => {
                 {...field}
                 isMulti
                 placeholder="Select collaborators"
-                options={USERS}
+                options={collaborators}
               />
             )}
           />
@@ -124,4 +127,17 @@ const CreateTask = ({ title }) => {
   );
 };
 
-export default CreateTask;
+const mapStateToProps = state => {
+  return {
+    collaboratorsData: state.collaborators
+  }
+}
+
+const mapDispacthToProps = dispatch => {
+  return {
+    fetchCollaboratorsAction: (filter) => dispatch(fetchCollaborators(filter))
+  }
+}
+
+export default connect(mapStateToProps, mapDispacthToProps)(CreateTask);
+
