@@ -5,7 +5,8 @@ export const USERS = {
 
 export const TASKS = {
     getTasks: 'tasks',
-    createTask: 'tasks/create'
+    createTask: 'tasks/create',
+    getTaskDetail: 'tasks',
 };
 
 export const COLLABORATORS = {
