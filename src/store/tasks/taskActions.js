@@ -8,8 +8,8 @@ import { TASKS } from "../../constants/HttpEndpoints";
 import { getToken } from "../../utils/LocalStorageToken";
 
 export const fetchTasks = (filter = {}) => {
-  return (dispacth) => {
-    dispacth(fetchTaskRequest());    
+  return (dispatch) => {
+    dispatch(fetchTaskRequest());    
     const callHttp = async (filter) => {
       try {
         const token = getToken();
@@ -21,9 +21,9 @@ export const fetchTasks = (filter = {}) => {
               params: filter
             }
         );
-        dispacth(fetchTaskSuccess(response.data));
+        dispatch(fetchTaskSuccess(response.data));
       } catch (error) {
-        dispacth(fetchTaskFailure(error.response.statusText));
+        dispatch(fetchTaskFailure(error.response.statusText));
       }
     };
     callHttp(filter);

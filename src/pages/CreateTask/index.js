@@ -11,8 +11,17 @@ import { useEffect } from "react";
 import { connect } from "react-redux";
 import { fetchCollaborators } from "../../store";
 
+import { HTTP_VERBS, requestHttp } from '../../utils/HttpRequest';
+import { getToken } from "../../utils/LocalStorageToken";
+import { TASKS } from "../../constants/HttpEndpoints";
+
+import { useHistory } from "react-router";
+
 const CreateTask = ({ title, collaboratorsData, fetchCollaboratorsAction }) => {
   
+  const history = useHistory();
+  const requestError = false;
+
   const {
     register,
     control,
@@ -24,8 +33,30 @@ const CreateTask = ({ title, collaboratorsData, fetchCollaboratorsAction }) => {
   } = useForm({ mode: 'onChange' });
 
   const onSubmitCreate = (data) => {
-    debugger;
-    console.log("data form", data);
+    data.responsible = data.responsible.value;
+    data.collaborators = data.collaborators.map(({value}) => {return value});
+    try{
+      requestCreateTask(data);
+      history.push("/");
+    } catch (error) {
+
+    };
+  };
+
+  const requestCreateTask = async (data) => {
+    try {
+      const token = getToken();
+      const request = await requestHttp({
+        method: HTTP_VERBS.POST,
+        token,
+        data: data,
+        endpoint: TASKS.createTask,
+      });
+      
+      return request;
+    } catch (error) {
+      console.log("Error");
+    };
   };
 
   const getCollaborators = () => {
@@ -123,6 +154,9 @@ const CreateTask = ({ title, collaboratorsData, fetchCollaboratorsAction }) => {
           <Button disabled={!isValid} type="submit" text="Create" />
         </div>
       </form>
+      <div>
+        { requestError && "Ha ocurrido un error"}
+      </div>
     </Fragment>
   );
 };

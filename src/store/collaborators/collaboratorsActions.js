@@ -8,8 +8,8 @@ import {
   import { getToken } from "../../utils/LocalStorageToken";
 
 export const fetchCollaborators = ()  => {
-    return (dispacth) => {
-        dispacth(fetchCollaboratorsRequest());
+    return (dispatch) => {
+        dispatch(fetchCollaboratorsRequest());
         const callHttp = async () => {
             try{
                 const token = getToken();
@@ -22,9 +22,9 @@ export const fetchCollaborators = ()  => {
                     }
                 );
 
-                dispacth(fetchCollaboratorsSuccess(response.data));
+                dispatch(fetchCollaboratorsSuccess(response.data));
             } catch (error) {
-                dispacth(fetchCollaboratorsFailure(error.response.statusText));
+                dispatch(fetchCollaboratorsFailure(error.response.statusText));
             }
         };
         callHttp();

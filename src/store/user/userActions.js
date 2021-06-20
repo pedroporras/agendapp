@@ -10,8 +10,8 @@ import {
 import { getToken, setToken } from '../../utils/LocalStorageToken';
 
 export const fetchLogin = (credentials = {}) => {
-  return (dispacth) => {
-    dispacth(fetchLoginRequest());
+  return (dispatch) => {
+    dispatch(fetchLoginRequest());
     const callHttp = async (credentials) => {
       try {
         const response = await requestHttp({
@@ -20,10 +20,10 @@ export const fetchLogin = (credentials = {}) => {
           data: credentials
         });
         setToken(response.data.token);
-        dispacth(fetchLoginSuccess());
+        dispatch(fetchLoginSuccess());
       } catch (error) {
         const messageError = error.response.statusText || 'error';
-        dispacth(fetchLoginFailure(messageError));
+        dispatch(fetchLoginFailure(messageError));
       }
     };
     callHttp(credentials);
@@ -62,7 +62,7 @@ export const autologinSuccess = () => {
 }
 
 export const autologin = () => {
-  return (dispacth) => {
+  return (dispatch) => {
     const callHttp = async () => {
       try {
         const token = getToken();
@@ -71,9 +71,9 @@ export const autologin = () => {
           endpoint: USERS.check,
           token
         });
-        dispacth(autologinSuccess());
+        dispatch(autologinSuccess());
       } catch (error) {
-        dispacth(autologinFailure());
+        dispatch(autologinFailure());
       }
     };
     callHttp();
