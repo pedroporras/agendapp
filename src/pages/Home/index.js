@@ -12,10 +12,6 @@ const Home = ({ title, tasksData, fetchTasksAction }) => {
   const { currentTaskFilter } = useFilterStatus();
 
   useEffect(() => {
-    console.log('task state from store', tasksData);
-  }, [tasksData]);
-
-  useEffect(() => {
     fetchTasksAction();
     // eslint-disable-next-line
   }, []);
