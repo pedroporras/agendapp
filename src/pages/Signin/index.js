@@ -24,7 +24,6 @@ export const Signin = () => {
   } = useForm({ mode: 'onChange' });
 
   const onSubmitLogin = (data) => {
-    console.log("data form", data);
     dispatch(fetchLogin(data));
   };
 

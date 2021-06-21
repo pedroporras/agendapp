@@ -30,8 +30,14 @@ export const TaskResponsable = styled.p`
     font-weight: 400;
 `;
 
-export const TaskFooter = styled.div`
+export const TaskCollaborators = styled.p`
+    color: #666;
+    font-size: 1.1em;
+    font-weight: 400;
     display: flex;
+`;
+
+export const TaskFooter = styled.div`
     align-items: center;
     justify-content: space-between;
 `;

@@ -7,18 +7,21 @@ import DatePicker from "react-date-picker";
 import { useForm, Controller } from "react-hook-form";
 import { Textarea } from "./styles";
 import { FormGroup, LabelError } from "../../globalStyles";
+import { useEffect } from "react";
+import { connect } from "react-redux";
+import { fetchCollaborators } from "../../store";
 
-const USERS = [
-  { value: 1, label: "Juan" },
-  { value: 2, label: "Luis" },
-  { value: 3, label: "Maria" },
-  { value: 4, label: "Jose" },
-  { value: 5, label: "Baltasar" },
-  { value: 6, label: "Gaspar" },
-];
+import { HTTP_VERBS, requestHttp } from '../../utils/HttpRequest';
+import { getToken } from "../../utils/LocalStorageToken";
+import { TASKS } from "../../constants/HttpEndpoints";
 
-const CreateTask = ({ title }) => {
+import { useHistory } from "react-router";
+
+const CreateTask = ({ title, collaboratorsData, fetchCollaboratorsAction }) => {
   
+  const history = useHistory();
+  const requestError = false;
+
   const {
     register,
     control,
@@ -30,12 +33,43 @@ const CreateTask = ({ title }) => {
   } = useForm({ mode: 'onChange' });
 
   const onSubmitCreate = (data) => {
-    console.log("data form", data);
+    data.responsible = data.responsible.value;
+    data.collaborators = data.collaborators.map(({value}) => {return value});
+    try{
+      requestCreateTask(data);
+      history.push("/");
+    } catch (error) {
+
+    };
   };
 
-  /*useEffect(() => {
-    console.log('formState', formState);
-  }, [formState])*/
+  const requestCreateTask = async (data) => {
+    try {
+      const token = getToken();
+      const request = await requestHttp({
+        method: HTTP_VERBS.POST,
+        token,
+        data: data,
+        endpoint: TASKS.createTask,
+      });
+      
+      return request;
+    } catch (error) {
+      console.log("Error");
+    };
+  };
+
+  const getCollaborators = () => {
+    return collaboratorsData.collaborators.map(({id, name}) => {return {value: id, label : name}})
+  };
+
+
+  useEffect(() => {
+    fetchCollaboratorsAction();
+    // eslint-disable-next-line
+  }, []);
+
+  const collaborators = getCollaborators();
 
   return (
     <Fragment>
@@ -65,7 +99,7 @@ const CreateTask = ({ title }) => {
               <Select
                 {...field}
                 placeholder="Select responsible"
-                options={USERS}
+                options={collaborators}
               />
             )}
           />
@@ -83,7 +117,7 @@ const CreateTask = ({ title }) => {
                 {...field}
                 isMulti
                 placeholder="Select collaborators"
-                options={USERS}
+                options={collaborators}
               />
             )}
           />
@@ -120,8 +154,24 @@ const CreateTask = ({ title }) => {
           <Button disabled={!isValid} type="submit" text="Create" />
         </div>
       </form>
+      <div>
+        { requestError && "Ha ocurrido un error"}
+      </div>
     </Fragment>
   );
 };
 
-export default CreateTask;
+const mapStateToProps = state => {
+  return {
+    collaboratorsData: state.collaborators
+  }
+}
+
+const mapDispacthToProps = dispatch => {
+  return {
+    fetchCollaboratorsAction: (filter) => dispatch(fetchCollaborators(filter))
+  }
+}
+
+export default connect(mapStateToProps, mapDispacthToProps)(CreateTask);
+
